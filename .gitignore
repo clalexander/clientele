@@ -1,1 +1,9 @@
-node_modules
+*.iml
+.idea
+.tscache
+.DS_Store
+node_modules/
+coverage/
+backup/
+.npmrc
+.env
