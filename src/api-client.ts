@@ -5,7 +5,6 @@ import axios, {
   AxiosRequestConfig,
   CreateAxiosDefaults,
 } from 'axios';
-import { Promisable } from 'type-fest';
 import {
   ApiError,
   BadGatewayApiError,
@@ -24,6 +23,8 @@ export interface ApiRequestOptions<D = any> extends AxiosRequestConfig<D> {
 interface ApiRequestInternalOptions extends ApiRequestOptions {
   retries?: number;
 }
+
+type Promisable<T> = Promise<T> | T;
 
 export type ApiMakeRequest<T = any, O = any> = (options: ApiRequestOptions & O) => Promisable<T>;
 
@@ -149,7 +150,7 @@ export class ApiClientBase {
   }
 }
 
-export default function ApiClient<T extends ApiModules<ApiResources>>(
+export function ApiClient<T extends ApiModules<ApiResources>>(
   modules: T,
 ): Constructor<ApiClientBase & UnwrapApiResources<T>, ApiClientOptions> {
   abstract class Class extends ApiClientBase {
