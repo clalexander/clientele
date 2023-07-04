@@ -13,7 +13,7 @@ import {
   NetworkApiError,
   TimeoutApiError,
 } from './api-error';
-import { Constructor } from './utility-types';
+import { Constructor, Promisable } from './utility-types';
 
 export interface ApiRequestOptions<D = any> extends AxiosRequestConfig<D> {
   path?: unknown | unknown[],
@@ -23,8 +23,6 @@ export interface ApiRequestOptions<D = any> extends AxiosRequestConfig<D> {
 interface ApiRequestInternalOptions extends ApiRequestOptions {
   retries?: number;
 }
-
-type Promisable<T> = Promise<T> | T;
 
 export type ApiMakeRequest<T = any, O = any> = (options: ApiRequestOptions & O) => Promisable<T>;
 
@@ -44,13 +42,11 @@ export type ApiModules<T extends ApiResources> = {
   [K in keyof T]: ApiModule<T[K]>;
 };
 
-type UnwrapApiResources<T> = T extends ApiModules<infer Type> ? Type : never;
-
 export type ApiErrorInterceptor = (
   error: ApiError,
   config: ApiRequestOptions,
 ) => Promisable<boolean | void>;
-// HERE
+
 export interface ApiClientOptions extends CreateAxiosDefaults {
   maxRetries?: number;
   apiErrorInterceptor?: ApiErrorInterceptor;
@@ -149,6 +145,8 @@ export class ApiClientBase {
     });
   }
 }
+
+type UnwrapApiResources<T> = T extends ApiModules<infer Type> ? Type : never;
 
 export function ApiClient<T extends ApiModules<ApiResources>>(
   modules: T,
