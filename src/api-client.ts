@@ -26,7 +26,7 @@ interface ApiRequestInternalOptions extends ApiRequestOptions {
 
 export type ApiMakeRequest<T = any, O = any> = (options: ApiRequestOptions & O) => Promisable<T>;
 
-export interface ApiModuleMethodsOptions<O = any> {
+export interface ApiModuleComponentsOptions<O = any> {
   makeRequest: ApiMakeRequest<any, O>;
 }
 
@@ -35,7 +35,7 @@ export type ApiResources = Record<string, ApiResource>;
 
 export type ApiModule<T extends ApiResource, O = any> = {
   path?: string;
-  methods: (options: ApiModuleMethodsOptions<O>) => T;
+  components: (options: ApiModuleComponentsOptions<O>) => T;
 };
 
 export type ApiModules<T extends ApiResources> = {
@@ -140,7 +140,7 @@ export class ApiClientBase {
   }
 
   protected makeResource<T extends ApiResource>(module: ApiModule<T>): T {
-    return module.methods({
+    return module.components({
       makeRequest: this.resourceMakeRequest(module.path),
     });
   }
