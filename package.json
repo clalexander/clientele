@@ -1,0 +1,42 @@
+{
+  "name": "api-client",
+  "version": "0.0.0",
+  "description": "Framework to build HTTP REST API clients",
+  "main": "lib/index.js",
+  "type": "module",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . -c .eslintrc.js",
+    "lint:fix": "eslint . -c .eslintrc.js --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clalexander/api-client.git"
+  },
+  "keywords": [
+    "api",
+    "client",
+    "framework",
+    "rest",
+    "request",
+    "http"
+  ],
+  "author": "Christopher Alexander",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-watch": "^8.0.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "type-fest": "^3.12.0"
+  }
+}
