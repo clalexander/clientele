@@ -1,6 +1,6 @@
 node_modules
-dist
+lib
 package.json
 tsconfig.json
-.eslintrc.js
+.eslintrc.cjs
 temp
