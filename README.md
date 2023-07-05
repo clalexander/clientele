@@ -1,11 +1,11 @@
-# API Client
+# Clientele
 
-Framework to build HTTP REST API clients.
+Axios-based framework to build HTTP REST API clients for Node.js and the browser.
 
 ## Installation
 
 ```bash
-npm install api-client
+npm install clientele
 ```
 
 ## Usage
@@ -15,8 +15,8 @@ npm install api-client
 Modules contain the definition and implementation of individual resources of an API.
 
 `modules/products.ts`
-```typescript
-import { ApiModule } from 'api-client';
+```ts
+import { ApiModule } from 'clientele';
 
 // resource definition
 export interface ProductsResource {
@@ -60,7 +60,7 @@ export default productsModule;
 The `modules` contant defines the object paths for the resources.
 
 `modules\index.ts`
-```typescript
+```ts
 import products from './products';
 
 const modules = {
@@ -70,20 +70,19 @@ const modules = {
 export default modules;
 ```
 
-### Client
+## Example
 
-The client extends the `ApiClient` mixin with the provided `modules` and will specify other baseline configuration.
+The client extends the `Clientele` mixin with the provided `modules` and will specify other baseline configuration.
 
-`client.ts`
-```typescript
-import ApiClient from 'api-client';
+```ts
+import Clientele from 'clientele';
 import modules from './modules';
 
 export interface ClientOptions {
   token: string;
 }
 
-export class Client extends ApiClient(modules) {
+export class Client extends Clientele(modules) {
   constructor({ token }: ClientOptions) {
     super({
       baseURL: 'https://api.service.com/v1',
@@ -95,13 +94,17 @@ export class Client extends ApiClient(modules) {
 }
 ```
 
-### Using the Client
+The new `Client` object and resources are typesafe and can be used with little effort by the developer.
 
-The new `Client` object and resources is typesafe and can be used with little effort from the developer.
-
-```typescript
+```ts
 const client = new Client({ token: API_TOKEN });
+
 const products = await client.products.list();
 const product = products[0];
+
 await client.products.delete(product.id);
 ```
+
+## License
+
+MIT
