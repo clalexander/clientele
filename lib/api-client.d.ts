@@ -1,25 +1,23 @@
 import { AxiosError, AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
 import { ApiError } from './api-error';
-import { Constructor } from './utility-types';
+import { Constructor, Promisable } from './utility-types';
 export interface ApiRequestOptions<D = any> extends AxiosRequestConfig<D> {
     path?: unknown | unknown[];
     preventRetry?: boolean;
 }
-type Promisable<T> = Promise<T> | T;
 export type ApiMakeRequest<T = any, O = any> = (options: ApiRequestOptions & O) => Promisable<T>;
-export interface ApiModuleMethodsOptions<O = any> {
+export interface ApiModuleComponentsOptions<O = any> {
     makeRequest: ApiMakeRequest<any, O>;
 }
 export type ApiResource = Record<string, any>;
 export type ApiResources = Record<string, ApiResource>;
 export type ApiModule<T extends ApiResource, O = any> = {
     path?: string;
-    methods: (options: ApiModuleMethodsOptions<O>) => T;
+    components: (options: ApiModuleComponentsOptions<O>) => T;
 };
 export type ApiModules<T extends ApiResources> = {
     [K in keyof T]: ApiModule<T[K]>;
 };
-type UnwrapApiResources<T> = T extends ApiModules<infer Type> ? Type : never;
 export type ApiErrorInterceptor = (error: ApiError, config: ApiRequestOptions) => Promisable<boolean | void>;
 export interface ApiClientOptions extends CreateAxiosDefaults {
     maxRetries?: number;
@@ -37,5 +35,6 @@ export declare class ApiClientBase {
     protected resourceMakeRequest(path?: string): ApiMakeRequest;
     protected makeResource<T extends ApiResource>(module: ApiModule<T>): T;
 }
+type UnwrapApiResources<T> = T extends ApiModules<infer Type> ? Type : never;
 export declare function ApiClient<T extends ApiModules<ApiResources>>(modules: T): Constructor<ApiClientBase & UnwrapApiResources<T>, ApiClientOptions>;
 export {};
