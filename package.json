@@ -1,7 +1,7 @@
 {
   "name": "clientele",
-  "version": "0.1.0",
-  "description": "Axios-based framework to build HTTP REST API clients for Node.js and the browser", 
+  "version": "0.1.2",
+  "description": "Axios-based framework to build HTTP REST API clients for Node.js and the browser",
   "main": "lib/index.js",
   "type": "module",
   "types": "lib/index.d.ts",
