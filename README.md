@@ -94,7 +94,7 @@ export class Client extends Clientele(modules) {
 }
 ```
 
-The new `Client` object and resources are typesafe and can be used with little effort by the developer.
+The new `Client` object and resources are typed and can be used with little effort by the developer.
 
 ```ts
 const client = new Client({ token: API_TOKEN });
