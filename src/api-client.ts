@@ -13,7 +13,10 @@ import {
   NetworkApiError,
   TimeoutApiError,
 } from './api-error';
-import { Constructor, Promisable } from './utility-types';
+
+type Arguments<T = any[]> = T extends Array<any> ? T : [T];
+type Constructor<T = any, A = any[]> = new (...args: Arguments<A>) => T;
+type Promisable<T> = Promise<T> | T;
 
 export interface ApiRequestOptions<D = any> extends AxiosRequestConfig<D> {
   path?: unknown | unknown[],
@@ -132,7 +135,7 @@ export class ApiClientBase {
     if (basePath) {
       pathParts.unshift(basePath);
     }
-    return pathParts.join('/');
+    return pathParts.join('/').replace(/\/{2,}/g, '/');
   }
 
   protected resourceMakeRequest(path?: string): ApiMakeRequest {

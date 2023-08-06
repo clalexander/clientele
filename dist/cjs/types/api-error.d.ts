@@ -44,3 +44,4 @@ export declare class TimeoutApiError<T = unknown, D = any> extends ApiError<T, D
 }
 export declare class UnknownApiError<T = unknown, D = any> extends ApiError<T, D> {
 }
+//# sourceMappingURL=api-error.d.ts.map

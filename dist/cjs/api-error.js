@@ -1,13 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UnknownApiError = exports.TimeoutApiError = exports.ConnectionAbortedApiError = exports.CanceledApiError = exports.InvalidURLApiError = exports.BadResponseApiError = exports.DeprecatedApiError = exports.NetworkApiError = exports.BadOptionApiError = exports.TooManyRedirectsApiError = exports.GatewayTimeoutApiError = exports.BadGatewayApiError = exports.InternalServerApiError = exports.ConflictApiError = exports.NotFoundApiError = exports.ForbiddenApiError = exports.UnauthorizedApiError = exports.BadRequestApiError = exports.ApiError = void 0;
+/* eslint-disable max-classes-per-file */
 const axios_1 = require("axios");
 class ApiError extends Error {
-    raw;
-    type;
-    code;
-    request;
-    response;
     constructor(raw) {
         super(raw.message);
         this.raw = raw;

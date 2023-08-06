@@ -1,49 +1,54 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ApiClient = exports.ApiClientBase = void 0;
-const tslib_1 = require("tslib");
-const axios_1 = tslib_1.__importDefault(require("axios"));
-const api_error_1 = require("./api-error");
-class ApiClientBase {
+/* eslint-disable max-classes-per-file */
+import axios from 'axios';
+import { ApiError, BadGatewayApiError, GatewayTimeoutApiError, InternalServerApiError, NetworkApiError, TimeoutApiError, } from './api-error';
+// must export for type declarations
+export class ApiClientBase {
     client;
     maxRetries;
     apiErrorInterceptor;
     constructor(options) {
         const { maxRetries = 0, apiErrorInterceptor, ...axiosCreateOptions } = options || {};
-        this.client = axios_1.default.create(axiosCreateOptions);
+        this.client = axios.create(axiosCreateOptions);
         this.maxRetries = maxRetries;
         this.apiErrorInterceptor = apiErrorInterceptor;
+        // add standard error interceptor
         this.client.interceptors.response.use(undefined, this.responseErrorInterceptorClosure);
     }
     async responseErrorInterceptor(error) {
         const config = ({ ...error.config });
         let maybeRetry = false;
-        const apiError = api_error_1.ApiError.generate(error);
+        const apiError = ApiError.generate(error);
         switch (apiError.constructor) {
-            case api_error_1.InternalServerApiError:
-            case api_error_1.BadGatewayApiError:
-            case api_error_1.GatewayTimeoutApiError:
-            case api_error_1.NetworkApiError:
-            case api_error_1.TimeoutApiError:
+            case InternalServerApiError:
+            case BadGatewayApiError:
+            case GatewayTimeoutApiError:
+            case NetworkApiError:
+            case TimeoutApiError:
                 maybeRetry = true;
                 break;
             default:
                 break;
         }
+        // call custom error interceptor
         if (this.apiErrorInterceptor) {
             const errorRetry = await this.apiErrorInterceptor(apiError, config);
             if (errorRetry !== undefined) {
                 maybeRetry = errorRetry;
             }
         }
+        // retry flag
         const retry = maybeRetry && !config.preventRetry && (config.retries || 0) < this.maxRetries;
+        // maybe retry request
         if (retry) {
+            // update config
             const retryConfig = {
                 ...config,
                 retries: config.retries || 1,
             };
+            // retry
             return this.client(retryConfig);
         }
+        // throw error
         throw apiError;
     }
     responseErrorInterceptorClosure = (error) => this.responseErrorInterceptor(error);
@@ -62,7 +67,7 @@ class ApiClientBase {
         if (basePath) {
             pathParts.unshift(basePath);
         }
-        return pathParts.join('/');
+        return pathParts.join('/').replace(/\/{2,}/g, '/');
     }
     resourceMakeRequest(path) {
         return (options) => this.makeRequest(options, path);
@@ -73,8 +78,7 @@ class ApiClientBase {
         });
     }
 }
-exports.ApiClientBase = ApiClientBase;
-function ApiClient(modules) {
+export function ApiClient(modules) {
     class Class extends ApiClientBase {
         constructor(options) {
             super(options);
@@ -88,4 +92,3 @@ function ApiClient(modules) {
     }
     return Class;
 }
-exports.ApiClient = ApiClient;

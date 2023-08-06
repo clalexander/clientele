@@ -1,6 +1,6 @@
 node_modules
-lib
+dist
 package.json
-tsconfig.json
+tsconfig.*.json
 .eslintrc.cjs
 temp

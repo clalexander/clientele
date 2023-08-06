@@ -70,7 +70,7 @@ const modules = {
 export default modules;
 ```
 
-## Example
+### Client
 
 The client extends the `Clientele` mixin with the provided `modules` and will specify other baseline configuration.
 
