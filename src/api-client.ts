@@ -18,7 +18,7 @@ type Arguments<T = any[]> = T extends Array<any> ? T : [T];
 type Constructor<T = any, A = any[]> = new (...args: Arguments<A>) => T;
 type Promisable<T> = Promise<T> | T;
 
-export interface ApiRequestOptions<D = any> extends AxiosRequestConfig<D> {
+export interface ApiRequestOptions<T = any> extends AxiosRequestConfig<T> {
   path?: unknown | unknown[],
   preventRetry?: boolean;
 }
