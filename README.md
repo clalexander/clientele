@@ -28,7 +28,7 @@ export interface ProductsResource {
 }
 
 // module
-const productsModule = ApiModule<ProductsResource> = {
+const productsModule: ApiModule<ProductsResource> = {
   path: 'products',
   components: ({ makeRequest }) => ({
     list: () => makeRequest({
@@ -59,7 +59,7 @@ export default productsModule;
 
 The `modules` contant defines the object paths for the resources.
 
-`modules\index.ts`
+`modules/index.ts`
 ```ts
 import products from './products';
 
@@ -105,6 +105,11 @@ const product = products[0];
 await client.products.delete(product.id);
 ```
 
-## License
+## To Do
 
-MIT
+- [ ] Document types/options
+- [ ] Document `Clientele` methods
+
+# License
+
+This repository is licensed under the [MIT License](./LICENSE).

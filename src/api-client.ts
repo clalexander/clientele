@@ -157,10 +157,10 @@ export function ApiClient<T extends ApiModules<ApiResources>>(
   abstract class Class extends ApiClientBase {
     constructor(options: ApiClientOptions) {
       super(options);
-      const resources = Object.entries(modules).reduce((acc, [key, module]) => ({
-        ...acc,
-        [key]: this.makeResource(module),
-      }), {});
+      const resources = Object.entries(modules).reduce((acc, [key, module]) => {
+        acc[key] = this.makeResource(module);
+        return acc;
+      }, {} as Record<string, ApiResource>);
       Object.assign(this, resources);
       Object.freeze(this);
     }
