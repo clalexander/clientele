@@ -8,36 +8,71 @@ on:
       - "*.x"
 
 permissions:
-  contents: read # for checkout
+  contents: read
+
+env:
+  DEVELOPMENT_BRANCH: dev
 
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for npm provenance
+      contents: write
+      id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
+
       - name: Install dependencies
-        run: npm clean-install
+        run: npm ci
+
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
+
       - name: Build
         run: npm run build
-      - name: Test
-        run: npm test
+
+      - name: Lint
+        run: npm run lint
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
+
+  rebase:
+    name: Rebase
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: release
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebase
+        run: |
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "@$GITHUB_ACTOR"
+          git status
+          set -o xtrace
+          git fetch origin main
+          git pull
+          git fetch origin $DEVELOPMENT_BRANCH
+          git checkout -b origin/$DEVELOPMENT_BRANCH
+          git rebase origin/main
+          git push origin origin/$DEVELOPMENT_BRANCH:$DEVELOPMENT_BRANCH
