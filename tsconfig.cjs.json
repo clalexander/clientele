@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist/cjs",
-    "declarationDir": "./dist/cjs/types",
+    "declarationDir": "./dist/types",
     "lib": ["ES6", "DOM"],
     "target": "ES6",
     "module": "commonjs",
