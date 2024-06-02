@@ -1,0 +1,55 @@
+name: Checks
+
+
+on:
+  workflow_dispatch: # Manually trigger the workflow for PRs that don't trigger the 'pull_request' event
+  pull_request:
+    branches:
+      - dev
+      - main
+      - 'release/**'
+      - 'hotfix/**'
+
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+
+jobs:
+  checks:
+    name: All Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      - name: Get NPM Version
+        id: get-npm-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Install NPM Dependencies
+        run: npm ci
+      
+      - name: Verify Signatures
+        run: |
+          # HACK: Node.js 20 doesn't currently have the latest npm that fixes the audit signatures issue
+          # Reference: https://github.com/npm/cli/issues/7279
+          npm i -g npm@latest 
+          npm audit signatures
+
+      - name: Build
+        run: npm run build
+      
+      - name: Lint
+        run: npx lerna run lint
