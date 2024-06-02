@@ -40,4 +40,3 @@ export declare class ApiClientBase {
 type UnwrapApiResources<T> = T extends ApiModules<infer Type> ? Type : never;
 export declare function ApiClient<T extends ApiModules<ApiResources>>(modules: T): Constructor<ApiClientBase & UnwrapApiResources<T>, ApiClientOptions>;
 export {};
-//# sourceMappingURL=api-client.d.ts.map

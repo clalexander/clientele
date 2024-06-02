@@ -104,7 +104,10 @@ function ApiClient(modules) {
     class Class extends ApiClientBase {
         constructor(options) {
             super(options);
-            const resources = Object.entries(modules).reduce((acc, [key, module]) => (Object.assign(Object.assign({}, acc), { [key]: this.makeResource(module) })), {});
+            const resources = Object.entries(modules).reduce((acc, [key, module]) => {
+                acc[key] = this.makeResource(module);
+                return acc;
+            }, {});
             Object.assign(this, resources);
             Object.freeze(this);
         }
